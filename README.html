@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="mn" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Дэлхийг өөрчилсөн алдартай эрдэмтэд</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & Noto Sans (Cyrillic support) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.35s ease-out forwards',
+                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px) scale(0.98)' },
+                            '100%': { opacity: '1', transform: 'translateY(0) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-8px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(156, 163, 175, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(156, 163, 175, 0.7);
+        }
+        /* Hide scrollbar on horizontal category tabs */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-300 antialiased selection:bg-indigo-500 selection:text-white min-h-screen flex flex-col">
+
+    <!-- Top Navigation Bar -->
+    <header class="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200/80 dark:border-slate-800/80 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+            <!-- Brand Logo -->
+            <div class="flex items-center gap-2.5 cursor-pointer" onclick="resetFilters()">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                    <!-- Atom SVG Icon -->
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="2.5" fill="currentColor"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(30 12 12)"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(90 12 12)"/>
+                        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(150 12 12)"/>
+                    </svg>
+                </div>
+                <span class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400">
+                    Шинжлэх Ухаан
+                </span>
+            </div>
+
+            <!-- Action Controls -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <!-- Random / Scientist of the Day Button -->
+                <button id="spotlightBtn" onclick="openRandomScientist()" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/20 transition-all active:scale-95">
+                    <svg class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <span>Өдрийн эрдэмтэн</span>
+                </button>
+
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" aria-label="Өнгөний горим солих" class="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors">
+                    <!-- Sun Icon (shown in dark mode) -->
+                    <svg id="sunIcon" class="w-5 h-5 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                    </svg>
+                    <!-- Moon Icon (shown in light mode) -->
+                    <svg id="moonIcon" class="w-5 h-5 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden pt-12 pb-10 sm:pt-16 sm:pb-14">
+        <!-- Decorative Background Blobs -->
+        <div class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-tr from-indigo-500/15 via-purple-500/15 to-cyan-500/15 blur-3xl rounded-full"></div>
+        
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 text-center relative z-10">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 border border-indigo-200/70 dark:border-indigo-800/60 mb-5">
+                <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                Хүн төрөлхтний оюун санааны оргилууд
+            </div>
+            
+            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight mb-4">
+                Дэлхийг өөрчилсөн <span class="bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-violet-600 to-cyan-600 dark:from-indigo-400 dark:via-violet-400 dark:to-cyan-400">алдартай эрдэмтэд</span>
+            </h1>
+            
+            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed mb-8">
+                Орчлон ертөнцийн нууцыг тайлж, шинжлэх ухаан, технологийн хөгжлийг шинэ түвшинд гаргасан суут сэтгэгчдийн намтар, нээлт, сонирхолтой түүхүүдтэй танилцаарай.
+            </p>
+
+            <!-- Search Bar -->
+            <div class="max-w-xl mx-auto relative group">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </div>
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Эрдэмтний нэр, салбар эсвэл нээлтээр хайх (жнь: Эйнштейн, Радий, Компьютер)..." 
+                    class="w-full pl-12 pr-10 py-3.5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-lg shadow-slate-200/40 dark:shadow-none text-sm sm:text-base text-slate-800 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 transition-all"
+                >
+                <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 flex-grow w-full">
+        
+        <!-- Category Filter Tabs & Result Count -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+            <div id="categoryTabs" class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                <!-- Tabs injected via JS -->
+            </div>
+            
+            <div class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-medium shrink-0">
+                Нийт <span id="resultCount" class="text-slate-900 dark:text-white font-bold">0</span> эрдэмтэн харуулж байна
+            </div>
+        </div>
+
+        <!-- Scientists Grid -->
+        <div id="scientistsGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Cards injected via JS -->
+        </div>
+
+        <!-- Empty State (Shown when search yields no results) -->
+        <div id="emptyState" class="hidden text-center py-16 px-4 rounded-3xl bg-white/60 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800/80">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-400">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-1">Илэрц олдсонгүй</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-5">
+                Таны хайсан түлхүүр үг болон сонгосон ангилалд тохирох эрдэмтэн олдсонгүй. Өөр үгээр хайж үзнэ үү.
+            </p>
+            <button onclick="resetFilters()" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors shadow-sm">
+                Бүх шүүлтүүрийг арилгах
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200/80 dark:border-slate-800/80 bg-white/50 dark:bg-slate-900/50 py-8 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500 dark:text-slate-400">
+            <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-700 dark:text-slate-200">Алдартай Эрдэмтэд</span>
+                <span>•</span>
+                <span>Танин мэдэхүйн дижитал сан</span>
+            </div>
+            <p class="text-xs text-center sm:text-right">
+                "Төсөөлөл бол мэдлэгээс илүү чухал юм." — Альберт Эйнштейн
+            </p>
+        </div>
+    </footer>
+
+    <!-- Detailed Scientist Modal -->
+    <div id="scientistModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div id="modalBackdrop" onclick="closeModal()" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity animate-fade-in"></div>
+        
+        <!-- Modal Content Box -->
+        <div class="relative z-10 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-2xl animate-slide-up">
+            
+            <!-- Modal Header Banner -->
+            <div id="modalBanner" class="relative h-36 sm:h-44 p-6 flex items-end justify-between bg-gradient-to-r from-indigo-600 to-purple-600">
+                <!-- Decorative pattern overlay -->
+                <div class="absolute inset-0 opacity-15" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 16px 16px;"></div>
+                
+                <!-- Spotlight Tag (shown if opened via Scientist of the Day) -->
+                <div id="modalSpotlightBadge" class="hidden absolute top-4 left-4 px-3 py-1 rounded-full bg-amber-400 text-slate-950 text-xs font-bold flex items-center gap-1.5 shadow-md">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <span>Онцлох эрдэмтэн</span>
+                </div>
+
+                <!-- Close Button -->
+                <button onclick="closeModal()" aria-label="Хаах" class="absolute top-4 right-4 w-9 h-9 rounded-full bg-black/25 hover:bg-black/40 text-white flex items-center justify-center backdrop-blur-md transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="px-6 sm:px-8 pb-8 -mt-14 relative">
+                <!-- Portrait Avatar & Main Title -->
+                <div class="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-5 mb-6">
+                    <div id="modalAvatar" class="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl border-4 border-white dark:border-slate-900 shadow-xl overflow-hidden shrink-0 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                        <!-- Custom SVG injected here -->
+                    </div>
+                    <div class="pb-1">
+                        <div class="flex flex-wrap items-center gap-2 mb-1.5">
+                            <span id="modalFieldBadge" class="px-2.5 py-0.5 rounded-lg text-xs font-semibold bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+                                Физик
+                            </span>
+                            <span id="modalYears" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                1879 – 1955
+                            </span>
+                            <span id="modalNationality" class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                                • Герман / АНУ
+                            </span>
+                        </div>
+                        <h2 id="modalName" class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                            Альберт Эйнштейн
+                        </h2>
+                    </div>
+                </div>
+
+                <!-- Famous Quote Box -->
+                <div class="p-4 sm:p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 mb-6 relative">
+                    <svg class="w-6 h-6 text-indigo-400/40 absolute top-3 left-3" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                    </svg>
+                    <p id="modalQuote" class="pl-7 italic text-sm sm:text-base text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
+                        "Төсөөлөл бол мэдлэгээс илүү чухал юм. Мэдлэг хязгаартай бол төсөөлөл бүх дэлхийг хамардаг."
+                    </p>
+                </div>
+
+                <!-- Full Biography -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-2">
+                        Товч намтар
+                    </h3>
+                    <p id="modalBio" class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Намтар...
+                    </p>
+                </div>
+
+                <!-- Key Discoveries & Inventions -->
+                <div class="mb-6">
+                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+                        Гол нээлт ба бүтээлүүд
+                    </h3>
+                    <ul id="modalDiscoveries" class="space-y-2.5">
+                        <!-- List items injected via JS -->
+                    </ul>
+                </div>
+
+                <!-- Fun Fact Box -->
+                <div class="p-4 rounded-2xl bg-amber-50/80 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-800/40 flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0 mt-0.5">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 mb-1">
+                            Сонирхолтой баримт
+                        </h4>
+                        <p id="modalFunFact" class="text-sm text-amber-900/90 dark:text-amber-200/90 leading-relaxed">
+                            Сонирхолтой баримт...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Modal Footer Actions -->
+                <div class="mt-7 pt-5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between gap-3">
+                    <button onclick="openRandomScientist(true)" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                        </svg>
+                        <span>Өөр эрдэмтэн үзэх</span>
+                    </button>
+                    <button onclick="closeModal()" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors">
+                        Хаах
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        /**
+         * Эрдэмтдийн өгөгдлийн сан (Монгол хэлээр бүрэн боловсруулсан)
+         * Зургийн оронд эрдэмтэн бүрт зориулсан өвөрмөц SVG хөрөг болон бэлгэдэл ашигласан.
+         */
+        const scientistsData = [
+            {
+                id: "einstein",
+                name: "Альберт Эйнштейн",
+                years: "1879 – 1955",
+                nationality: "Герман / АНУ",
+                category: "Физик",
+                fieldBadge: "Онолын физик",
+                gradient: "from-indigo-600 via-blue-600 to-cyan-500",
+                badgeColor: "bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+                shortContribution: "Харьцангуйн ерөнхий ба тусгай онол, E=mc² томьёо болон фотоэффектийн хуулийг нээсэн.",
+                quote: "Төсөөлөл бол мэдлэгээс илүү чухал юм. Мэдлэг хязгаартай бол төсөөлөл бүх дэлхийг хамардаг.",
+                bio: "Альберт Эйнштейн нь 20-р зууны хамгийн нөлөө бүхий онолын физикч бөгөөд орчин үеийн физикийн хоёр тулгуур баганын нэг болох харьцангуйн онолыг боловсруулсан. Тэрээр 1921 онд фотоэффектийн хуулийг нээснийхээ төлөө физикийн салбарын Нобелийн шагнал хүртжээ.",
+                discoveries: [
+                    "Харьцангуйн тусгай болон ерөнхий онол (Орон зай, цаг хугацааны нэгдэл)",
+                    "Масс-энергийн эквивалент чанарын томьёо (E = mc²)",
+                    "Фотоны онол ба фотоцахилгаан үзэгдлийн тайлбар",
+                    "Броуны хөдөлгөөний математик загварчлал"
+                ],
+                funFact: "Эйнштейн багадаа хэлд оройтож орсон бөгөөд оймсонд дургүй байсан тул хэзээ ч оймс өмсдөггүй байжээ. Түүнчлэн түүнд 1952 онд Израилийн Ерөнхийлөгч болох санал тавихад татгалзсан байдаг.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-ein" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#3b82f6"/>
+                                <stop offset="100%" stop-color="#4f46e5"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-ein)"/>
+                        <!-- Wild hair silhouette -->
+                        <path d="M25 58 C18 42, 30 22, 48 25 C55 15, 72 15, 78 26 C95 24, 104 42, 95 58 C100 68, 92 78, 84 74 L36 74 C28 78, 20 68, 25 58 Z" fill="#e2e8f0"/>
+                        <!-- Face -->
+                        <path d="M38 45 C38 34, 82 34, 82 45 L80 72 C80 86, 40 86, 40 72 Z" fill="#fde68a"/>
+                        <!-- Mustache -->
+                        <path d="M46 69 Q60 63 74 69 Q60 75 46 69 Z" fill="#cbd5e1"/>
+                        <!-- Eyes -->
+                        <circle cx="50" cy="54" r="3" fill="#1e293b"/>
+                        <circle cx="70" cy="54" r="3" fill="#1e293b"/>
+                        <!-- Formula tag -->
+                        <text x="60" y="106" font-family="monospace" font-size="13" font-weight="bold" fill="#ffffff" text-anchor="middle" opacity="0.9">E = mc²</text>
+                    </svg>`
+            },
+            {
+                id: "curie",
+                name: "Мари Кюри",
+                years: "1867 – 1934",
+                nationality: "Польш / Франц",
+                category: "Хими",
+                fieldBadge: "Физик ба Хими",
+                gradient: "from-emerald-500 via-teal-500 to-cyan-600",
+                badgeColor: "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+                shortContribution: "Цацраг идэвхт чанарыг нээж, Полони болон Ради химийн элементүүдийг ялган авсан.",
+                quote: "Амьдралд айх зүйл нэг ч үгүй, зөвхөн ойлгох л зүйлс бий.",
+                bio: "Мари Склодовска-Кюри нь цацраг идэвхт чанарын анхдагч судалгаагаараа алдаршсан Польш гаралтай Францын физикч, химич юм. Тэрээр Нобелийн шагнал хүртсэн анхны эмэгтэй, хоёр өөр шинжлэх ухааны салбарт (Физик ба Хими) Нобелийн шагнал хүртсэн цорын ганц хүн билээ.",
+                discoveries: [
+                    "Цацраг идэвхт чанарын (Radioactivity) онол ба хэмжилтийн арга",
+                    "Полони (Po) болон Ради (Ra) хэмээх хоёр шинэ химийн элемент",
+                    "Дэлхийн I дайны үеийн зөөврийн рентген аппаратын ('Бяцхан Кюри') хөгжүүлэлт"
+                ],
+                funFact: "Түүний судалгааны тэмдэглэлийн дэвтрүүд өнөөдөр ч өндөр цацраг идэвхтэй хэвээр байгаа тул тусгай тугалган хайрцагт хадгалагддаг бөгөөд үзэхийг хүсвэл хамгаалалтын хувцас өмсөх шаардлагатай.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-curie" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#10b981"/>
+                                <stop offset="100%" stop-color="#0d9488"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-curie)"/>
+                        <!-- Glowing Flask -->
+                        <path d="M52 28 L68 28 L68 44 L86 82 C88 87, 84 92, 78 92 L42 92 C36 92, 32 87, 34 82 L52 44 Z" fill="#ffffff" fill-opacity="0.2" stroke="#ffffff" stroke-width="3"/>
+                        <!-- Glowing Liquid -->
+                        <path d="M40 72 L80 72 L85 83 C86 87, 83 90, 78 90 L42 90 C37 90, 34 87, 35 83 Z" fill="#a7f3d0"/>
+                        <!-- Radioactivity rings -->
+                        <circle cx="60" cy="60" r="38" fill="none" stroke="#a7f3d0" stroke-width="1.5" stroke-dasharray="6 4"/>
+                        <circle cx="55" cy="62" r="3" fill="#ffffff"/>
+                        <circle cx="66" cy="54" r="2.5" fill="#ffffff"/>
+                        <text x="60" y="109" font-family="sans-serif" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">Ra • 88</text>
+                    </svg>`
+            },
+            {
+                id: "newton",
+                name: "Исаак Ньютон",
+                years: "1643 – 1727",
+                nationality: "Англи",
+                category: "Физик",
+                fieldBadge: "Физик ба Математик",
+                gradient: "from-violet-600 via-purple-600 to-indigo-700",
+                badgeColor: "bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300",
+                shortContribution: "Сонгодог механикийн гурван хууль, бүх ертөнцийн таталцлын хууль, дифференциал тооллыг бүтээсэн.",
+                quote: "Хэрэв би бусдаас илүү алсыг харж чадсан бол тэр нь аварга биетнүүдийн мөрөн дээр зогссоны ач юм.",
+                bio: "Сэр Исаак Ньютон нь шинжлэх ухааны хувьсгалын гол төлөөлөгч, Английн физикч, математикч, одон оронч юм. Түүний 1687 онд хэвлүүлсэн 'Байгалийн философийн математик зарчмууд' бүтээл нь сонгодог механикийн үндсийг тавьж, дэлхий ертөнцийг үзэх үзлийг бүрэн өөрчилжээ.",
+                discoveries: [
+                    "Хөдөлгөөний гурван үндсэн хууль (Ньютоны хуулиуд)",
+                    "Бүх ертөнцийн таталцлын хууль",
+                    "Дифференциал болон интеграл тоолол (Математик анализ)",
+                    "Цагаан гэрэл призмээр задарч солонгын өнгө үүсгэдэг болохыг баталсан"
+                ],
+                funFact: "Ньютон 1665 онд тахлын улмаас Кембрижийн их сургууль хаагдахад хөдөө гэртээ харьж, ердөө хоёр жилийн дотор таталцлын хууль, оптик болон математик анализын суурь нээлтүүдээ хийжээ.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-newt" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#7c3aed"/>
+                                <stop offset="100%" stop-color="#4338ca"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-newt)"/>
+                        <!-- Prism -->
+                        <polygon points="60,26 30,84 90,84" fill="#ffffff" fill-opacity="0.18" stroke="#ffffff" stroke-width="2.5"/>
+                        <!-- Incoming white light -->
+                        <line x1="12" y1="62" x2="43" y2="58" stroke="#ffffff" stroke-width="3"/>
+                        <!-- Rainbow spectrum -->
+                        <line x1="75" y1="56" x2="108" y2="46" stroke="#ef4444" stroke-width="2.5"/>
+                        <line x1="76" y1="58" x2="108" y2="53" stroke="#f59e0b" stroke-width="2.5"/>
+                        <line x1="77" y1="60" x2="108" y2="60" stroke="#10b981" stroke-width="2.5"/>
+                        <line x1="78" y1="62" x2="108" y2="67" stroke="#3b82f6" stroke-width="2.5"/>
+                        <!-- Apple icon -->
+                        <circle cx="60" cy="98" r="8" fill="#ef4444"/>
+                        <path d="M60 90 Q63 84 67 86" stroke="#4ade80" stroke-width="2" fill="none"/>
+                    </svg>`
+            },
+            {
+                id: "tesla",
+                name: "Никола Тесла",
+                years: "1856 – 1943",
+                nationality: "Серби / АНУ",
+                category: "Физик",
+                fieldBadge: "Цахилгаан инженерчлэл",
+                gradient: "from-cyan-500 via-sky-600 to-blue-700",
+                badgeColor: "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/40 dark:text-cyan-300",
+                shortContribution: "Хувьсах гүйдлийн (AC) цахилгаан хангамжийн систем, Тесла ороомог, утасгүй холбооны анхдагч.",
+                quote: "Хэрэв та орчлон ертөнцийн нууцыг олохыг хүсвэл энерги, давтамж, чичиргээний талаар бод.",
+                bio: "Никола Тесла нь орчин үеийн хувьсах гүйдлийн (AC) цахилгаан эрчим хүчний системийг зохион бүтээсэн суут зохион бүтээгч, физикч юм. Тэрээр амьдралынхаа туршид 300 гаруй патент эзэмшиж, утасгүй эрчим хүч дамжуулах, радио долгион, робот техникийн үндсийг тавьжээ.",
+                discoveries: [
+                    "Хувьсах гүйдлийн (AC) индукцийн хөдөлгүүр ба трансформатор",
+                    "Өндөр хүчдэлийн Тесла ороомог (Tesla Coil)",
+                    "Утасгүй удирдлагатай завь (Орчин үеийн дроны өвөг)",
+                    "Эргэлдэгч соронзон орны зарчим"
+                ],
+                funFact: "Тесла гайхалтай ой тогтоолттой байсан бөгөөд бүхэл бүтэн номыг цээжээр тогтоож, ямар ч ноорог зураг зуралгүйгээр оюун санаандаа машин механизмаа угсарч, туршиж чаддаг байв.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-tes" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#06b6d4"/>
+                                <stop offset="100%" stop-color="#1d4ed8"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-tes)"/>
+                        <!-- Tesla Coil Base -->
+                        <rect x="44" y="86" width="32" height="10" rx="3" fill="#e2e8f0"/>
+                        <rect x="52" y="48" width="16" height="38" rx="2" fill="#cbd5e1"/>
+                        <!-- Toroid top -->
+                        <ellipse cx="60" cy="44" rx="22" ry="7" fill="#f8fafc"/>
+                        <!-- Lightning arcs -->
+                        <polyline points="38,44 24,34 30,26 16,18" fill="none" stroke="#fef08a" stroke-width="2.5" stroke-linecap="round"/>
+                        <polyline points="82,44 96,32 90,24 104,16" fill="none" stroke="#fef08a" stroke-width="2.5" stroke-linecap="round"/>
+                        <polyline points="60,37 56,22 65,16 60,8" fill="none" stroke="#fef08a" stroke-width="2" stroke-linecap="round"/>
+                    </svg>`
+            },
+            {
+                id: "lovelace",
+                name: "Ада Лавлейс",
+                years: "1815 – 1852",
+                nationality: "Их Британи",
+                category: "Компьютерийн ухаан",
+                fieldBadge: "Програмчлал ба Математик",
+                gradient: "from-pink-500 via-rose-500 to-purple-600",
+                badgeColor: "bg-pink-100 text-pink-700 dark:bg-pink-900/40 dark:text-pink-300",
+                shortContribution: "Дэлхийн хамгийн анхны компьютерийн алгоритмыг бичсэн анхны программист.",
+                quote: "Аналитик машин нь яг л Жаккардын нэхмэлийн машин цэцэг, навч нэхдэг шиг алгебрийн хэв маягийг нэхдэг.",
+                bio: "Ада Лавлейс нь Английн математикч, зохиолч бөгөөд Чарльз Бэббижийн зохион бүтээсэн механик ерөнхий зориулалтын компьютер болох 'Аналитик машин'-д зориулж дэлхийн анхны алгоритмыг бичсэнээр түүхэнд анхны компьютерийн программист хэмээн мөнхөрчээ.",
+                discoveries: [
+                    "Бернуллийн тоог тооцоолох дэлхийн анхны компьютерийн алгоритм (1843)",
+                    "Компьютер зөвхөн тоо бодох бус хөгжим, дүрс, бэлгэдэл боловсруулах боломжтойг зөгнөсөн",
+                    "Давталт (Loop) болон нөхцөлт салаалалтын програмчлалын суурь ойлголт"
+                ],
+                funFact: "АНУ-ын Батлан хамгаалах яам 1980 онд шинэ програмчлалын хэлээ түүний дурсгалд зориулан 'Ada' хэмээн нэрлэсэн байдаг.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-ada" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#ec4899"/>
+                                <stop offset="100%" stop-color="#8b5cf6"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-ada)"/>
+                        <!-- Punch card / Analytical Engine motif -->
+                        <rect x="28" y="24" width="64" height="72" rx="8" fill="#ffffff" fill-opacity="0.18" stroke="#ffffff" stroke-width="2"/>
+                        <!-- Binary / Punch holes -->
+                        <circle cx="44" cy="40" r="4" fill="#ffffff"/>
+                        <circle cx="60" cy="40" r="4" fill="#ffffff" fill-opacity="0.3"/>
+                        <circle cx="76" cy="40" r="4" fill="#ffffff"/>
+                        
+                        <circle cx="44" cy="56" r="4" fill="#ffffff" fill-opacity="0.3"/>
+                        <circle cx="60" cy="56" r="4" fill="#ffffff"/>
+                        <circle cx="76" cy="56" r="4" fill="#ffffff"/>
+                        
+                        <circle cx="44" cy="72" r="4" fill="#ffffff"/>
+                        <circle cx="60" cy="72" r="4" fill="#ffffff"/>
+                        <circle cx="76" cy="72" r="4" fill="#ffffff" fill-opacity="0.3"/>
+                        <text x="60" y="110" font-family="monospace" font-size="11" font-weight="bold" fill="#ffffff" text-anchor="middle">01001101</text>
+                    </svg>`
+            },
+            {
+                id: "darwin",
+                name: "Чарльз Дарвин",
+                years: "1809 – 1882",
+                nationality: "Их Британи",
+                category: "Биологи ба Анагаах ухаан",
+                fieldBadge: "Эволюцийн биологи",
+                gradient: "from-lime-600 via-emerald-600 to-teal-700",
+                badgeColor: "bg-lime-100 text-lime-800 dark:bg-lime-900/40 dark:text-lime-300",
+                shortContribution: "Байгалийн шалгарал болон эволюцийн онолыг боловсруулж, орчин үеийн биологийн суурийг тавьсан.",
+                quote: "Хамгийн хүчтэй нь ч биш, хамгийн ухаантай нь ч биш, харин өөрчлөлтөд хамгийн сайн дасан зохицож чадсан нь амьд үлддэг.",
+                bio: "Чарльз Дарвин нь байгалийн шинжээч, геологич, биологич бөгөөд дэлхий дээрх бүх амьд организм нийтлэг өвөг дээдсээс гаралтай бөгөөд байгалийн шалгарлын замаар хувьсан өөрчлөгддөг болохыг нотолсон. Түүний 1859 онд хэвлүүлсэн 'Зүйлүүдийн үүсэл' ном шинжлэх ухаанд эргэлт хийжээ.",
+                discoveries: [
+                    "Байгалийн шалгарлын замаар явагдах эволюцийн онол",
+                    "Галапагосын арлуудын шувуудын хошууны дасан зохицлын судалгаа",
+                    "Шүрэн арлуудын үүслийн геологийн тайлбар"
+                ],
+                funFact: "Дарвин 'Бигл' хөлөг онгоцоор дэлхийг тойрох 5 жилийн аялалд гарахдаа далайн өвчнөөр маш их шаналж байсан ч аяллын тэмдэглэлүүд нь түүний насан туршийн судалгааны эх сурвалж болжээ.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-dar" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#65a30d"/>
+                                <stop offset="100%" stop-color="#059669"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-dar)"/>
+                        <!-- Tree of Life branches -->
+                        <path d="M60 96 L60 64 M60 72 L36 48 M60 64 L84 44 M46 58 L32 34 M74 52 L88 28 M60 64 L60 28" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+                        <!-- Leaves -->
+                        <circle cx="36" cy="48" r="5" fill="#d9f99d"/>
+                        <circle cx="84" cy="44" r="5" fill="#d9f99d"/>
+                        <circle cx="32" cy="34" r="5" fill="#bef264"/>
+                        <circle cx="88" cy="28" r="5" fill="#bef264"/>
+                        <circle cx="60" cy="28" r="6" fill="#ecfccb"/>
+                    </svg>`
+            },
+            {
+                id: "turing",
+                name: "Алан Тюринг",
+                years: "1912 – 1954",
+                nationality: "Их Британи",
+                category: "Компьютерийн ухаан",
+                fieldBadge: "Компьютер ба Хиймэл оюун",
+                gradient: "from-slate-700 via-indigo-700 to-blue-800",
+                badgeColor: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-300",
+                shortContribution: "Тюринг машин, хиймэл оюуны Тюринг тест болон Энигма нууц кодыг тайлсан.",
+                quote: "Бид зөвхөн богино зайд л урагш харж чадна, гэхдээ тэнд хийх ёстой маш олон зүйл байгааг харж байна.",
+                bio: "Алан Тюринг нь орчин үеийн компьютерийн шинжлэх ухаан болон хиймэл оюун ухааны эцэг гэгддэг Английн математикч, криптографч юм. Дэлхийн II дайны үед тэрээр Германы 'Энигма' нууц мэдээллийн машины кодыг тайлах төхөөрөмжийг бүтээж, сая сая хүний амийг аварсан гавьяатай.",
+                discoveries: [
+                    "Тюринг машин (Орчин үеийн компьютерийн онолын загвар)",
+                    "Хиймэл оюуны сэтгэн бодох чадварыг шалгах 'Тюринг тест'",
+                    "Дэлхийн II дайны үеийн 'Бомбе' код тайлагч машин",
+                    "Биологийн морфогенезийн математик үндэслэл"
+                ],
+                funFact: "Тюринг нь олимпийн хэмжээний марафон гүйгч байсан бөгөөд 40 км замыг ердөө 2 цаг 46 минутад туулж байжээ.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-tur" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#334155"/>
+                                <stop offset="100%" stop-color="#3730a3"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-tur)"/>
+                        <!-- Turing Tape -->
+                        <rect x="14" y="46" width="92" height="28" rx="4" fill="#ffffff" fill-opacity="0.15" stroke="#ffffff" stroke-width="2"/>
+                        <line x1="37" y1="46" x2="37" y2="74" stroke="#ffffff" stroke-width="1.5"/>
+                        <line x1="60" y1="46" x2="60" y2="74" stroke="#ffffff" stroke-width="1.5"/>
+                        <line x1="83" y1="46" x2="83" y2="74" stroke="#ffffff" stroke-width="1.5"/>
+                        <text x="25" y="65" font-family="monospace" font-size="14" font-weight="bold" fill="#93c5fd" text-anchor="middle">1</text>
+                        <text x="48" y="65" font-family="monospace" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">0</text>
+                        <text x="71" y="65" font-family="monospace" font-size="14" font-weight="bold" fill="#93c5fd" text-anchor="middle">1</text>
+                        <text x="94" y="65" font-family="monospace" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">1</text>
+                        <!-- Read Head -->
+                        <polygon points="60,26 52,40 68,40" fill="#fbbf24"/>
+                    </svg>`
+            },
+            {
+                id: "galileo",
+                name: "Галилео Галилей",
+                years: "1564 – 1642",
+                nationality: "Итали",
+                category: "Одон орон",
+                fieldBadge: "Одон орон ба Физик",
+                gradient: "from-amber-500 via-orange-600 to-red-600",
+                badgeColor: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
+                shortContribution: "Дуран авайг сайжруулж Бархасбадийн дагуулуудыг нээн, дэлхий нарыг тойрон эргэдэг болохыг баталсан.",
+                quote: "Тэгсэн ч гэсэн тэр эргэсээр л байна!",
+                bio: "Галилео Галилей нь орчин үеийн ажиглалтын одон орон судлал, туршилтын физик болон шинжлэх ухааны аргын эцэг хэмээн өргөмжлөгддөг Италийн эрдэмтэн юм. Тэрээр өөрийн бүтээсэн дуран авайгаар сансар огторгуйг ажиглаж, дэлхий орчлон ертөнцийн төв биш болохыг баталжээ.",
+                discoveries: [
+                    "Бархасбадь гарагийн дөрвөн том дагуул (Ио, Европ, Ганимед, Каллисто)",
+                    "Сугар гарагийн үе шатууд ба Сарны гадаргуугийн уулс, тогоонууд",
+                    "Чөлөөт уналтын хурдатгалын хууль ба дүүжингийн хэлбэлзэл"
+                ],
+                funFact: "Галилей Пизагийн налуу цамхаг дээрээс хүнд, хөнгөн хоёр бөмбөгийг зэрэг унагаж, агаарын эсэргүүцэлгүй үед бүх биет ижил хурдтай унадгийг харуулсан алдарт туршилтыг хийсэн гэдэг.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-gal" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#f59e0b"/>
+                                <stop offset="100%" stop-color="#dc2626"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-gal)"/>
+                        <!-- Stars -->
+                        <circle cx="28" cy="28" r="2.5" fill="#fef08a"/>
+                        <circle cx="92" cy="24" r="3" fill="#fef08a"/>
+                        <circle cx="88" cy="46" r="2" fill="#ffffff"/>
+                        <!-- Jupiter / Planet -->
+                        <circle cx="78" cy="36" r="11" fill="#fde68a"/>
+                        <!-- Telescope -->
+                        <g transform="rotate(-32 55 72)">
+                            <rect x="26" y="66" width="58" height="12" rx="3" fill="#f8fafc"/>
+                            <rect x="76" y="64" width="12" height="16" rx="2" fill="#cbd5e1"/>
+                        </g>
+                        <!-- Tripod -->
+                        <line x1="56" y1="74" x2="40" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                        <line x1="56" y1="74" x2="72" y2="104" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+                    </svg>`
+            },
+            {
+                id: "franklin",
+                name: "Розалинд Франклин",
+                years: "1920 – 1958",
+                nationality: "Их Британи",
+                category: "Биологи ба Анагаах ухаан",
+                fieldBadge: "Молекул биологи ба Хими",
+                gradient: "from-fuchsia-600 via-purple-600 to-indigo-600",
+                badgeColor: "bg-fuchsia-100 text-fuchsia-700 dark:bg-fuchsia-900/40 dark:text-fuchsia-300",
+                shortContribution: "Рентген кристаллографийн аргаар ДНХ-ийн давхар мушгиа бүтцийг ('Зураг 51') нээхэд шийдвэрлэх хувь нэмэр оруулсан.",
+                quote: "Шинжлэх ухаан ба өдөр тутмын амьдралыг салгаж болохгүй, салгаж ч чадахгүй.",
+                bio: "Розалинд Франклин нь Английн химич, рентген кристаллографч бөгөөд ДНХ (дезоксирибонуклеины хүчил), РНХ, вирус, нүүрс болон бал чулууны молекулын бүтцийг ойлгоход үнэтэй хувь нэмэр оруулсан. Түүний авсан алдарт 'Зураг 51' нь ДНХ-ийн давхар мушгиа бүтцийг тайлах түлхүүр болжээ.",
+                discoveries: [
+                    "ДНХ-ийн давхар мушгиа бүтцийг баталсан рентген дифракцийн 'Зураг 51'",
+                    "Тамхины мозайк вирусийн (TMV) молекулын бүтцийн судалгаа",
+                    "Нүүрсний бичил сүвэрхэг бүтцийн ангилал"
+                ],
+                funFact: "Тэрээр маш нямбай судлаач байсан бөгөөд ДНХ-ийн нэг ширхэг рентген зургийг тод буулгахын тулд 100 гаруй цаг тасралтгүй өртөлт хийж ажилладаг байжээ.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-fra" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#c026d3"/>
+                                <stop offset="100%" stop-color="#4f46e5"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-fra)"/>
+                        <!-- DNA Double Helix -->
+                        <path d="M40 22 C80 42, 40 78, 80 98" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="round"/>
+                        <path d="M80 22 C40 42, 80 78, 40 98" fill="none" stroke="#f5d0fe" stroke-width="4" stroke-linecap="round"/>
+                        <!-- Base pairs -->
+                        <line x1="48" y1="32" x2="72" y2="32" stroke="#ffffff" stroke-width="2.5"/>
+                        <line x1="54" y1="48" x2="66" y2="48" stroke="#ffffff" stroke-width="2.5"/>
+                        <line x1="54" y1="72" x2="66" y2="72" stroke="#ffffff" stroke-width="2.5"/>
+                        <line x1="48" y1="88" x2="72" y2="88" stroke="#ffffff" stroke-width="2.5"/>
+                    </svg>`
+            },
+            {
+                id: "mendeleev",
+                name: "Дмитрий Менделеев",
+                years: "1834 – 1907",
+                nationality: "Орос",
+                category: "Хими",
+                fieldBadge: "Хими",
+                gradient: "from-teal-600 via-emerald-600 to-green-700",
+                badgeColor: "bg-teal-100 text-teal-700 dark:bg-teal-900/40 dark:text-teal-300",
+                shortContribution: "Химийн элементүүдийн үелэх хуулийг нээж, үелэх системийн анхны хүснэгтийг зохиосон.",
+                quote: "Шинжлэх ухаан хэмжиж эхэлсэн тэр цагаас л эхэлдэг.",
+                bio: "Дмитрий Иванович Менделеев нь Оросын суут химич, зохион бүтээгч юм. Тэрээр 1869 онд тухайн үед мэдэгдэж байсан 63 химийн элементийг атом массаар нь ангилан Үелэх системийг бүтээж, хараахан нээгдээгүй байсан элементүүдийн шинж чанарыг гайхалтай нарийвчлалтай урьдчилан хэлжээ.",
+                discoveries: [
+                    "Химийн элементүүдийн үелэх хууль ба Үелэх систем",
+                    "Галли, Сканди, Германи зэрэг шинэ элементүүдийн оршин тогтнолыг урьдчилан таамагласан",
+                    "Уусмалын химийн онол ба нефтийн боловсруулалтын судалгаа"
+                ],
+                funFact: "Менделеев үелэх хүснэгтийн бүтцийг олох гэж олон өдөр нойргүй ажилласны эцэст зүүрмэглэх зуураа зүүдэндээ элементүүд яг зөв байрандаа орж буйг харсан гэдэг.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-men" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#0d9488"/>
+                                <stop offset="100%" stop-color="#15803d"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-men)"/>
+                        <!-- Periodic Table Element Tile -->
+                        <rect x="26" y="22" width="68" height="76" rx="10" fill="#ffffff" fill-opacity="0.16" stroke="#ffffff" stroke-width="2.5"/>
+                        <text x="36" y="40" font-family="sans-serif" font-size="12" font-weight="bold" fill="#a7f3d0">101</text>
+                        <text x="60" y="68" font-family="sans-serif" font-size="30" font-weight="extrabold" fill="#ffffff" text-anchor="middle">Md</text>
+                        <text x="60" y="86" font-family="sans-serif" font-size="10" fill="#ecfdf5" text-anchor="middle">Менделеви</text>
+                    </svg>`
+            },
+            {
+                id: "hawking",
+                name: "Стивен Хокинг",
+                years: "1942 – 2018",
+                nationality: "Их Британи",
+                category: "Одон орон",
+                fieldBadge: "Одон орон ба Космологи",
+                gradient: "from-indigo-800 via-violet-800 to-purple-900",
+                badgeColor: "bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-300",
+                shortContribution: "Хар нүхний цацраг ('Хокингийн цацраг') болон орчлон ертөнцийн үүслийн квант онолыг боловсруулсан.",
+                quote: "Хөл доороо бус дээшээ оддыг хар. Харж буй зүйлийнхээ учрыг ойлгохыг хичээ.",
+                bio: "Стивен Хокинг нь онолын физикч, космологич бөгөөд хар нүх болон харьцангуйн ерөнхий онолын чиглэлээр хийсэн судалгаагаараа алдартай. Хэдийгээр 21 насандаа хүнд хэлбэрийн мэдрэлийн өвчтэй (ALS) болж суугаа болсон ч тэрээр шинжлэх ухааныг олон нийтэд түгээн дэлгэрүүлж, 'Цаг хугацааны товч түүх' номоороо дэлхийд танигдсан.",
+                discoveries: [
+                    "Хар нүхнүүд дулааны цацраг ялгаруулдаг болохыг нотолсон ('Хокингийн цацраг')",
+                    "Орчлон ертөнцийн сингуляр байдлын теорем (Рожер Пенроузтай хамтран)",
+                    "Хязгааргүй орчлон ертөнцийн квант загвар"
+                ],
+                funFact: "Стивен Хокинг 2007 онд жингүйдлийн орчныг мэдрэхийн тулд тусгай нислэг хийж, 40 гаруй жилийн дараа анх удаа тэргэнцрээсээ чөлөөтэй хөөрсөн байдаг.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-haw" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#312e81"/>
+                                <stop offset="100%" stop-color="#581c87"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-haw)"/>
+                        <!-- Accretion Disk -->
+                        <ellipse cx="60" cy="60" rx="46" ry="14" transform="rotate(-18 60 60)" fill="none" stroke="#f59e0b" stroke-width="3.5"/>
+                        <ellipse cx="60" cy="60" rx="36" ry="10" transform="rotate(-18 60 60)" fill="none" stroke="#fde68a" stroke-width="2"/>
+                        <!-- Black Hole Core -->
+                        <circle cx="60" cy="60" r="18" fill="#090d16" stroke="#c084fc" stroke-width="2"/>
+                    </svg>`
+            },
+            {
+                id: "pasteur",
+                name: "Луи Пастер",
+                years: "1822 – 1895",
+                nationality: "Франц",
+                category: "Биологи ба Анагаах ухаан",
+                fieldBadge: "Микробиологи ба Анагаах ухаан",
+                gradient: "from-sky-500 via-blue-600 to-indigo-600",
+                badgeColor: "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300",
+                shortContribution: "Вакцинжуулалт, пастеризацийн арга болон халдварт өвчний нянгийн онолыг нээсэн.",
+                quote: "Шинжлэх ухаан эх орон гэж мэддэггүй, учир нь мэдлэг бол хүн төрөлхтний өмч бөгөөд дэлхийг гэрэлтүүлэгч бамбар юм.",
+                bio: "Луи Пастер нь Францын химич, микробиологич бөгөөд халдварт өвчнөөс урьдчилан сэргийлэх вакцинжуулалтын зарчмыг нээж, сая сая хүний амийг аварсан эрдэмтэн юм. Тэрээр сүү, дарс зэрэг хүнсний бүтээгдэхүүнийг халааж ариутгах 'пастеризацийн' аргыг бүтээжээ.",
+                discoveries: [
+                    "Галзуу болон боом өвчний эсрэг анхны вакцинууд",
+                    "Хүнсний бүтээгдэхүүнийг нянгаас хамгаалах Пастеризацийн арга",
+                    "Өвчин үүсгэгч бичил биетний (нянгийн) онолын нотолгоо"
+                ],
+                funFact: "Тэрээр анх урлагт авьяастай залуу байсан бөгөөд 15 настайдаа эцэг эхийнхээ хөргийг зурж байсан нь өдгөө Парисын Пастерийн музейд хадгалагддаг.",
+                svgArt: `
+                    <svg viewBox="0 0 120 120" class="w-full h-full">
+                        <defs>
+                            <linearGradient id="g-pas" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#0ea5e9"/>
+                                <stop offset="100%" stop-color="#2563eb"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="120" height="120" fill="url(#g-pas)"/>
+                        <!-- Microscope / Petri dish motif -->
+                        <circle cx="60" cy="60" r="34" fill="#ffffff" fill-opacity="0.16" stroke="#ffffff" stroke-width="2.5"/>
+                        <circle cx="60" cy="60" r="26" fill="none" stroke="#bae6fd" stroke-width="1.5" stroke-dasharray="4 3"/>
+                        <!-- Microbes -->
+                        <rect x="46" y="48" width="12" height="5" rx="2.5" transform="rotate(25 52 50)" fill="#fde047"/>
+                        <rect x="62" y="64" width="14" height="5" rx="2.5" transform="rotate(-30 69 66)" fill="#a7f3d0"/>
+                        <circle cx="68" cy="46" r="3.5" fill="#ffffff"/>
+                        <circle cx="48" cy="68" r="3" fill="#ffffff"/>
+                    </svg>`
+            }
+        ];
+
+        // Ангиллын жагсаалт
+        const categories = [
+            "Бүгд",
+            "Физик",
+            "Хими",
+            "Биологи ба Анагаах ухаан",
+            "Компьютерийн ухаан",
+            "Одон орон"
+        ];
+
+        // Төлөв (State)
+        let activeCategory = "Бүгд";
+        let searchQuery = "";
+        let currentModalScientistId = null;
+
+        // DOM элементүүд
+        const gridEl = document.getElementById("scientistsGrid");
+        const tabsEl = document.getElementById("categoryTabs");
+        const searchInput = document.getElementById("searchInput");
+        const clearSearchBtn = document.getElementById("clearSearchBtn");
+        const resultCountEl = document.getElementById("resultCount");
+        const emptyStateEl = document.getElementById("emptyState");
+        const modalEl = document.getElementById("scientistModal");
+
+        // Theme (Dark/Light mode) тохиргоо
+        function initTheme() {
+            const savedTheme = localStorage.getItem("theme");
+            const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            
+            if (savedTheme === "dark" || (!savedTheme && prefersDark)) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        }
+
+        document.getElementById("themeToggle").addEventListener("click", () => {
+            const isDark = document.documentElement.classList.toggle("dark");
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+        });
+
+        // Ангиллын товчлууруудыг зурах
+        function renderCategoryTabs() {
+            tabsEl.innerHTML = categories.map(cat => {
+                const isActive = cat === activeCategory;
+                return `
+                    <button 
+                        onclick="setCategory('${cat}')"
+                        class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap transition-all ${
+                            isActive 
+                            ? 'bg-indigo-600 text-white shadow-md shadow-indigo-500/25' 
+                            : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200/80 dark:border-slate-800'
+                        }"
+                    >
+                        ${cat}
+                    </button>
+                `;
+            }).join("");
+        }
+
+        // Эрдэмтдийн картуудыг шүүж харуулах
+        function renderScientists() {
+            const query = searchQuery.trim().toLowerCase();
+
+            const filtered = scientistsData.filter(sci => {
+                const matchesCategory = activeCategory === "Бүгд" || sci.category === activeCategory;
+                if (!matchesCategory) return false;
+
+                if (!query) return true;
+
+                // Нэр, салбар, товч нээлт, намтар болон нээлтүүдийн жагсаалтаас хайх
+                const searchableText = [
+                    sci.name,
+                    sci.category,
+                    sci.fieldBadge,
+                    sci.nationality,
+                    sci.shortContribution,
+                    sci.bio,
+                    ...sci.discoveries
+                ].join(" ").toLowerCase();
+
+                return searchableText.includes(query);
+            });
+
+            resultCountEl.textContent = filtered.length;
+
+            if (filtered.length === 0) {
+                gridEl.innerHTML = "";
+                gridEl.classList.add("hidden");
+                emptyStateEl.classList.remove("hidden");
+                return;
+            }
+
+            emptyStateEl.classList.add("hidden");
+            gridEl.classList.remove("hidden");
+
+            gridEl.innerHTML = filtered.map(sci => `
+                <article 
+                    onclick="openModal('${sci.id}', false)"
+                    class="group cursor-pointer rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 overflow-hidden shadow-sm hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1.5 transition-all duration-300 flex flex-col"
+                >
+                    <!-- Card Top Header with Custom SVG Portrait -->
+                    <div class="relative h-32 bg-gradient-to-r ${sci.gradient} p-5 flex items-end justify-between">
+                        <div class="absolute inset-0 opacity-15" style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 12px 12px;"></div>
+                        
+                        <span class="relative z-10 px-2.5 py-1 rounded-lg text-[11px] font-semibold bg-black/25 text-white backdrop-blur-md">
+                            ${sci.years}
+                        </span>
+                    </div>
+
+                    <!-- Overlapping Avatar -->
+                    <div class="px-5 -mt-11 mb-3 flex items-end justify-between relative z-10">
+                        <div class="w-20 h-20 rounded-2xl border-4 border-white dark:border-slate-900 shadow-lg overflow-hidden bg-slate-100 dark:bg-slate-800 group-hover:scale-105 transition-transform duration-300">
+                            ${sci.svgArt}
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-semibold ${sci.badgeColor}">
+                            ${sci.fieldBadge}
+                        </span>
+                    </div>
+
+                    <!-- Card Content -->
+                    <div class="px-5 pb-5 flex-grow flex flex-col">
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors mb-1.5">
+                            ${sci.name}
+                        </h3>
+                        
+                        <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-3 leading-relaxed mb-4 flex-grow">
+                            ${sci.shortContribution}
+                        </p>
+
+                        <!-- Card Footer Action -->
+                        <div class="pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+                            <span>Дэлгэрэнгүй унших</span>
+                            <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                            </svg>
+                        </div>
+                    </div>
+                </article>
+            `).join("");
+        }
+
+        // Ангилал солих
+        function setCategory(category) {
+            activeCategory = category;
+            renderCategoryTabs();
+            renderScientists();
+        }
+
+        // Хайлтын талбарын үйлдэл
+        searchInput.addEventListener("input", (e) => {
+            searchQuery = e.target.value;
+            if (searchQuery.length > 0) {
+                clearSearchBtn.classList.remove("hidden");
+            } else {
+                clearSearchBtn.classList.add("hidden");
+            }
+            renderScientists();
+        });
+
+        function clearSearch() {
+            searchQuery = "";
+            searchInput.value = "";
+            clearSearchBtn.classList.add("hidden");
+            renderScientists();
+            searchInput.focus();
+        }
+
+        function resetFilters() {
+            activeCategory = "Бүгд";
+            searchQuery = "";
+            searchInput.value = "";
+            clearSearchBtn.classList.add("hidden");
+            renderCategoryTabs();
+            renderScientists();
+        }
+
+        // Дэлгэрэнгүй мэдээллийн цонх (Modal) нээх
+        function openModal(id, isSpotlight = false) {
+            const sci = scientistsData.find(item => item.id === id);
+            if (!sci) return;
+
+            currentModalScientistId = id;
+
+            // Banner gradient шинэчлэх
+            const bannerEl = document.getElementById("modalBanner");
+            bannerEl.className = `relative h-36 sm:h-44 p-6 flex items-end justify-between bg-gradient-to-r ${sci.gradient}`;
+
+            // Spotlight тэмдэг харуулах эсэх
+            const spotlightBadge = document.getElementById("modalSpotlightBadge");
+            if (isSpotlight) {
+                spotlightBadge.classList.remove("hidden");
+            } else {
+                spotlightBadge.classList.add("hidden");
+            }
+
+            // Мэдээллүүдийг оноох
+            document.getElementById("modalAvatar").innerHTML = sci.svgArt;
+            const fieldBadgeEl = document.getElementById("modalFieldBadge");
+            fieldBadgeEl.textContent = sci.fieldBadge;
+            fieldBadgeEl.className = `px-2.5 py-0.5 rounded-lg text-xs font-semibold ${sci.badgeColor}`;
+            
+            document.getElementById("modalYears").textContent = sci.years;
+            document.getElementById("modalNationality").textContent = `• ${sci.nationality}`;
+            document.getElementById("modalName").textContent = sci.name;
+            document.getElementById("modalQuote").textContent = `"${sci.quote}"`;
+            document.getElementById("modalBio").textContent = sci.bio;
+            document.getElementById("modalFunFact").textContent = sci.funFact;
+
+            // Нээлтүүдийн жагсаалт
+            document.getElementById("modalDiscoveries").innerHTML = sci.discoveries.map(disc => `
+                <li class="flex items-start gap-2.5 text-sm sm:text-base text-slate-700 dark:text-slate-300">
+                    <span class="w-5 h-5 rounded-full bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0 mt-0.5">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                        </svg>
+                    </span>
+                    <span>${disc}</span>
+                </li>
+            `).join("");
+
+            // Modal харуулах
+            modalEl.classList.remove("hidden");
+            modalEl.classList.add("flex");
+            document.body.style.overflow = "hidden";
+        }
+
+        // Modal хаах
+        function closeModal() {
+            modalEl.classList.add("hidden");
+            modalEl.classList.remove("flex");
+            document.body.style.overflow = "";
+        }
+
+        // Өдрийн эрдэмтэн / Санамсаргүй эрдэмтэн харуулах
+        function openRandomScientist(excludeCurrent = false) {
+            let pool = scientistsData;
+            if (excludeCurrent && currentModalScientistId) {
+                pool = scientistsData.filter(s => s.id !== currentModalScientistId);
+            }
+            const randomIndex = Math.floor(Math.random() * pool.length);
+            openModal(pool[randomIndex].id, true);
+        }
+
+        // ESC товч дарахад Modal хаах
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !modalEl.classList.contains("hidden")) {
+                closeModal();
+            }
+        });
+
+        // Эхлүүлэх
+        initTheme();
+        renderCategoryTabs();
+        renderScientists();
+    </script>
+</body>
+</html>
